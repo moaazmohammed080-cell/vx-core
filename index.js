@@ -4,6 +4,8 @@ import colors from 'colors';
 import { connectDatabase } from './src/database/connect.js';
 import { loadCommands } from './src/handlers/commandHandler.js';
 import { loadEvents } from './src/handlers/eventHandler.js';
+import SecurityCore from './src/security/SecurityCore.js';
+import { config } from './src/config/config.js';
 
 dotenv.config();
 
@@ -14,6 +16,8 @@ const client = new Client({
     GatewayIntentBits.GuildMessages,
     GatewayIntentBits.MessageContent,
     GatewayIntentBits.DirectMessages,
+    GatewayIntentBits.GuildAuditLog,
+    GatewayIntentBits.GuildWebhooks,
   ],
 });
 
@@ -21,6 +25,7 @@ const client = new Client({
 client.commands = new Collection();
 client.buttons = new Collection();
 client.cooldowns = new Collection();
+client.securityCore = SecurityCore;
 
 // Load commands, events, and database
 (async () => {
@@ -41,6 +46,12 @@ client.cooldowns = new Collection();
     console.log('[LOADING]'.info, 'Connecting to database...');
     await connectDatabase();
     console.log('[DATABASE]'.info, 'Connected to MongoDB successfully!');
+
+    console.log('[LOADING]'.info, 'Initializing Security Core...');
+    if (config.features.securityCore) {
+      await SecurityCore.initialize();
+      console.log('[SECURITY CORE]'.info, 'Security Core initialized successfully!');
+    }
 
     console.log('[LOADING]'.info, 'Loading commands...');
     await loadCommands(client);

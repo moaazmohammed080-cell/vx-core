@@ -1,25 +1,20 @@
-import { ActivityType } from 'discord.js';
+import SecurityCore from '../security/SecurityCore.js';
 import { config } from '../config/config.js';
 
-export default {
+export const event = {
   name: 'ready',
   once: true,
   async execute(client) {
-    console.log(`[READY]`.info, `Bot logged in as ${client.user.tag}`);
+    console.log(`[BOT]`.info, `Logged in as ${client.user.tag}`);
+    console.log(`[BOT]`.info, `Serving ${client.guilds.cache.size} guild(s)`);
 
-    client.user.setActivity({
-      name: config.bot.activity,
-      type: ActivityType.Playing,
-    });
-
-    try {
-      const guild = await client.guilds.fetch(config.guildId);
-      const commands = Array.from(client.commands.values()).map((cmd) => cmd.data);
-
-      await guild.commands.set(commands);
-      console.log(`[COMMANDS]`.info, `Registered ${commands.length} slash commands`);
-    } catch (error) {
-      console.error('[COMMANDS ERROR]'.error, error);
+    if (config.features.securityCore) {
+      for (const guild of client.guilds.cache.values()) {
+        await SecurityCore.setupGuild(guild.id);
+      }
+      console.log(`[SECURITY CORE]`.info, `Security initialized for ${client.guilds.cache.size} guild(s)`);
     }
+
+    client.user.setActivity(config.bot.activity, { type: 'WATCHING' });
   },
 };
