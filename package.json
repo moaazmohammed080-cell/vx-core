@@ -1,0 +1,25 @@
+{
+  "name": "vx-core",
+  "version": "1.0.0",
+  "description": "Professional Discord Bot with Ticket System, Giveaway, Credits, Levels, and more",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js"
+  },
+  "keywords": [
+    "discord",
+    "bot",
+    "discord.js",
+    "v14"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "dependencies": {
+    "discord.js": "^14.14.0",
+    "mongoose": "^8.0.0",
+    "dotenv": "^16.3.1",
+    "colors": "^1.4.0"
+  }
+}
